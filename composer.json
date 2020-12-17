@@ -1,0 +1,45 @@
+{
+  "name": "chiiya/laravel-utilities",
+  "description": "Common utilities for laravel projects",
+  "keywords": ["Laravel", "utilities", "common"],
+  "homepage": "https://github.com/chiiya/laravel-utilities",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Elisha Witte",
+      "email": "elishawitte@gmail.com",
+      "homepage": "https://github.com/chiiya",
+      "role": "Developer"
+    }
+  ],
+  "require": {
+    "php": "^7.2|^8.0",
+    "ext-zip": "*",
+    "box/spout": "^3.1",
+    "guzzlehttp/guzzle": "^7.0",
+    "illuminate/database": "^7.0|^8.0"
+  },
+  "require-dev": {
+    "friendsofphp/php-cs-fixer": "^2.16",
+    "mockery/mockery": "^1.3",
+    "phpunit/phpunit": "^8.0",
+    "symfony/var-dumper": "^4.4"
+  },
+  "autoload": {
+    "psr-4": {
+      "Chiiya\\Common\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Chiiya\\Common\\Tests\\": "tests/"
+    }
+  },
+  "config": {
+    "preferred-install": "dist",
+    "sort-packages": true,
+    "optimize-autoloader": true
+  },
+  "minimum-stability": "dev",
+  "prefer-stable": true
+}
