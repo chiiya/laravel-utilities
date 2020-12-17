@@ -18,11 +18,10 @@ class ExcelReader
      * Open an XLSX file for reading.
      *
      * @throws IOException
-     * @throws UnsupportedTypeException
      */
     public function open(string $path): void
     {
-        $this->reader = ReaderEntityFactory::createReaderFromFile($path);
+        $this->reader = ReaderEntityFactory::createXLSXReader();
         $this->reader->setTempFolder(storage_path('app/tmp'));
         $this->reader->open($path);
     }
@@ -31,9 +30,19 @@ class ExcelReader
      * Get the sheet iterator.
      *
      * @throws ReaderNotOpenedException
+     *
+     * @return SheetIterator|\Iterator
      */
-    public function getSheetIterator(): SheetIterator
+    public function getSheetIterator()
     {
         return $this->reader->getSheetIterator();
+    }
+
+    /**
+     * Close the reader.
+     */
+    public function close(): void
+    {
+        $this->reader->close();
     }
 }
