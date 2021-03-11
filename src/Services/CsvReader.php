@@ -18,11 +18,10 @@ class CsvReader
      * Open a CSV file for reading.
      *
      * @throws IOException
-     * @throws UnsupportedTypeException
      */
     public function open(string $path, string $delimiter = ';'): void
     {
-        $this->reader = ReaderEntityFactory::createReaderFromFile($path);
+        $this->reader = ReaderEntityFactory::createCSVReader();
         $this->reader->setFieldDelimiter($delimiter);
         $this->reader->open($path);
     }
