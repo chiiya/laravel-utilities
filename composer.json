@@ -16,7 +16,7 @@
     "php": "^7.2|^8.0",
     "ext-zip": "*",
     "box/spout": "^3.1",
-    "guzzlehttp/guzzle": "^7.0",
+    "guzzlehttp/guzzle": "^6.5|^7.0",
     "illuminate/database": "^7.0|^8.0"
   },
   "require-dev": {
@@ -28,11 +28,6 @@
   "autoload": {
     "psr-4": {
       "Chiiya\\Common\\": "src/"
-    }
-  },
-  "autoload-dev": {
-    "psr-4": {
-      "Chiiya\\Common\\Tests\\": "tests/"
     }
   },
   "config": {
