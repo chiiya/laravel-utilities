@@ -148,7 +148,10 @@ abstract class AbstractRepository
     /**
      * List of fields that should be searchable.
      */
-    abstract protected function searchableFields(): array;
+    protected function searchableFields(): array
+    {
+        return [];
+    }
 
     /**
      * Apply custom query filters.
