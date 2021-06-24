@@ -6,6 +6,7 @@ use Box\Spout\Common\Exception\IOException;
 use Box\Spout\Common\Exception\UnsupportedTypeException;
 use Box\Spout\Reader\Common\Creator\ReaderEntityFactory;
 use Box\Spout\Reader\CSV\Reader;
+use Box\Spout\Reader\CSV\RowIterator;
 use Box\Spout\Reader\CSV\SheetIterator;
 use Box\Spout\Reader\Exception\ReaderNotOpenedException;
 
@@ -34,6 +35,16 @@ class CsvReader
     public function getSheetIterator(): SheetIterator
     {
         return $this->reader->getSheetIterator();
+    }
+
+    /**
+     * Get the row iterator.
+     *
+     * @throws ReaderNotOpenedException
+     */
+    public function rows(): RowIterator
+    {
+        return $this->getSheetIterator()->current()->getRowIterator();
     }
 
     /**
