@@ -11,8 +11,7 @@ use Box\Spout\Reader\XLSX\SheetIterator;
 
 class ExcelReader
 {
-    /** @var Reader */
-    protected $reader;
+    protected Reader $reader;
 
     /**
      * Open an XLSX file for reading.

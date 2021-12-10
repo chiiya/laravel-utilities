@@ -7,8 +7,7 @@ use ZipArchive;
 
 class Zipper
 {
-    /** @var ZipArchive */
-    protected $zip;
+    protected ZipArchive $zip;
 
     /**
      * Zipper constructor.

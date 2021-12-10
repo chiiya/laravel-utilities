@@ -3,8 +3,6 @@
 namespace Chiiya\Common\Mail;
 
 /**
- * Trait SetsReturnPath.
- *
  * @property array $callbacks
  */
 trait SetsReturnPath

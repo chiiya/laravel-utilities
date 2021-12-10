@@ -13,8 +13,7 @@ use Box\Spout\Writer\XLSX\Writer;
 
 class ExcelWriter
 {
-    /** @var Writer */
-    protected $writer;
+    protected Writer $writer;
 
     /**
      * Open a XLSX file for reading.

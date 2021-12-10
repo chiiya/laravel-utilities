@@ -12,8 +12,7 @@ use Box\Spout\Reader\Exception\ReaderNotOpenedException;
 
 class CsvReader
 {
-    /** @var Reader */
-    protected $reader;
+    protected Reader $reader;
 
     /**
      * Open a CSV file for reading.

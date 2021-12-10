@@ -10,21 +10,16 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 abstract class AbstractRepository
 {
-    /** @var Model */
-    protected $model;
-    /** @var string */
-    protected static $orderBy = 'id';
-    /** @var string */
-    protected static $orderDirection = 'ASC';
+    protected Model $model;
+    protected static string $orderBy = 'id';
+    protected static string $orderDirection = 'ASC';
 
     /**
      * Fetch an entity by its id.
      *
-     * @param int|string $id
-     *
      * @throws ModelNotFoundException
      */
-    public function get($id, array $parameters = []): Model
+    public function get(int|string $id, array $parameters = []): Model
     {
         $query = $this->model->newQuery()->where($this->model->getKeyName(), $id);
         $query = $this->applyFilters($query, $parameters);

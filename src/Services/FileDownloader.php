@@ -7,10 +7,8 @@ use Illuminate\Contracts\Filesystem\Filesystem;
 
 class FileDownloader
 {
-    /** @var Client */
-    protected $client;
-    /** @var Filesystem */
-    protected $filesystem;
+    protected Client $client;
+    protected Filesystem $filesystem;
 
     /**
      * FileDownloader constructor.

@@ -9,8 +9,7 @@ use Box\Spout\Writer\Exception\WriterNotOpenedException;
 
 class CsvWriter
 {
-    /** @var Writer */
-    protected $writer;
+    protected Writer $writer;
 
     /**
      * Open a CSV file for writing.
