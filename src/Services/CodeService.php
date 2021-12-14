@@ -23,6 +23,7 @@ class CodeService
      */
     public const PATTERN_ALPHANUMERIC = '23456789ABCDEFGHKMNPQRSTUVXYZabcdefghkmnpqrstuvxyz';
 
+    /** @var string[] */
     protected array $codes = [];
     protected CsvWriter $writer;
 
@@ -40,7 +41,7 @@ class CodeService
         int $amount,
         string $pattern = '####-####-####',
         string $characters = self::PATTERN_NUMBERS_AND_UPPERCASE
-    ): void {
+    ): array {
         $codes = [];
         $count = $amount;
 
@@ -52,7 +53,9 @@ class CodeService
             }
         }
 
-        $this->codes = array_values($codes);
+        $this->codes = array_keys($codes);
+
+        return $this->codes;
     }
 
     /**
@@ -78,7 +81,7 @@ class CodeService
                 $this->writer->open($file);
             }
 
-            $this->writer->write($code);
+            $this->writer->write([$code]);
         }
 
         $this->writer->close();
