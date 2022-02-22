@@ -7,10 +7,10 @@ use Symfony\Component\Mime\Address;
 /**
  * @property array $callbacks
  */
-trait SetsReturnPath
+trait SetsSender
 {
     /**
-     * Set the return path for the message.
+     * Set the sender (return path) for the message.
      *
      * @return $this
      */
