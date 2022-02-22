@@ -3,7 +3,6 @@
 namespace Chiiya\Common\Services;
 
 use Box\Spout\Common\Exception\IOException;
-use Box\Spout\Common\Exception\UnsupportedTypeException;
 use Box\Spout\Reader\Common\Creator\ReaderEntityFactory;
 use Box\Spout\Reader\Exception\ReaderNotOpenedException;
 use Box\Spout\Reader\XLSX\Reader;

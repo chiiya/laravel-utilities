@@ -3,8 +3,11 @@
 namespace Chiiya\Common\Services;
 
 use Box\Spout\Common\Exception\IOException;
+use Box\Spout\Reader\Exception\ReaderNotOpenedException;
 use Box\Spout\Writer\Exception\WriterNotOpenedException;
 use Exception;
+use Illuminate\Contracts\Filesystem\Filesystem;
+use Symfony\Component\Console\Helper\ProgressBar;
 
 class CodeService
 {
@@ -14,22 +17,44 @@ class CodeService
     public const PATTERN_NUMBERS = '1234567890';
 
     /**
-     * Numbers and uppercase characters without similar looking ones (IJL1O0) and W (problematic character length)
+     * Numbers and uppercase characters without similar looking ones (IJL1O0) and W (problematic character length).
      */
     public const PATTERN_NUMBERS_AND_UPPERCASE = '23456789ABCDEFGHKMNPQRSTUVXYZ';
 
     /**
-     * Alphanumeric characters without similar looking ones (IJL1O0) and W (problematic character length)
+     * Alphanumeric characters without similar looking ones (IJL1O0) and W (problematic character length).
      */
     public const PATTERN_ALPHANUMERIC = '23456789ABCDEFGHKMNPQRSTUVXYZabcdefghkmnpqrstuvxyz';
 
-    /** @var string[] */
+    protected array $existing = [];
     protected array $codes = [];
-    protected CsvWriter $writer;
 
-    public function __construct(CsvWriter $writer)
+    public function __construct(
+        protected CsvReader $reader,
+        protected CsvWriter $writer,
+        protected Filesystem $filesystem
+    ) {
+    }
+
+    /**
+     * Import previously generated codes from CSV files into memory.
+     *
+     * @throws IOException
+     * @throws ReaderNotOpenedException
+     */
+    public function import(string $path, ?ProgressBar $bar = null): void
     {
-        $this->writer = $writer;
+        $files = $this->filesystem->files($path);
+
+        foreach ($files as $file) {
+            $this->reader->open($file->getRealPath());
+            foreach ($this->reader->rows() as $row) {
+                $value = trim($row->getCellAtIndex(0)->getValue());
+                $this->existing[$value] = $value;
+            }
+            $this->reader->close();
+            $bar?->advance();
+        }
     }
 
     /**
@@ -40,22 +65,21 @@ class CodeService
     public function generate(
         int $amount,
         string $pattern = '####-####-####',
-        string $characters = self::PATTERN_NUMBERS_AND_UPPERCASE
-    ): array {
-        $codes = [];
+        string $characters = self::PATTERN_NUMBERS_AND_UPPERCASE,
+        ?ProgressBar $bar = null
+    ): void {
         $count = $amount;
 
         while ($count > 0) {
             $code = $this->generateOne($pattern, $characters);
-            if (isset($codes[$code]) === false) {
-                $codes[$code] = true;
-                $count--;
+            if (isset($this->codes[$code]) === false && isset($this->existing[$code]) === false) {
+                $this->codes[$code] = true;
+                --$count;
+                $bar?->advance();
             }
         }
 
-        $this->codes = array_keys($codes);
-
-        return $this->codes;
+        $this->codes = array_keys($this->codes);
     }
 
     /**
@@ -64,29 +88,33 @@ class CodeService
      * @throws IOException
      * @throws WriterNotOpenedException
      */
-    public function export(string $path, int $perFile = 1000000): array
+    public function export(string $path, int $perFile = 1000000, ?ProgressBar $bar = null): array
     {
         $path = rtrim($path, DIRECTORY_SEPARATOR);
         $date = date('Ymdhi');
         $batch = 1;
+        $count = 0;
         $file = "{$path}/codes-{$date}-{$batch}.csv";
 
         $this->writer->open($file);
 
-        foreach ($this->codes as $i => $code) {
-            if ($i >= $perFile) {
+        foreach ($this->codes as $code) {
+            if ($count >= $perFile) {
                 $this->writer->close();
-                $batch++;
+                ++$batch;
+                $count = 0;
                 $file = "{$path}/codes-{$date}-{$batch}.csv";
                 $this->writer->open($file);
             }
 
             $this->writer->write([$code]);
+            $bar?->advance();
+            ++$count;
         }
 
         $this->writer->close();
 
-        return array_map(fn (int $batch) =>  "{$path}/codes-{$date}-{$batch}.csv", range(1, $batch));
+        return array_map(fn (int $batch) => "{$path}/codes-{$date}-{$batch}.csv", range(1, $batch));
     }
 
     /**
@@ -95,6 +123,22 @@ class CodeService
     public function getCodes(): array
     {
         return $this->codes;
+    }
+
+    /**
+     * Get the amount of imported & generated codes.
+     */
+    public function count(): int
+    {
+        return count($this->codes);
+    }
+
+    /**
+     * Merge existing codes into $codes array for importing.
+     */
+    public function mergeExisting(): void
+    {
+        $this->codes = array_merge($this->codes, $this->existing);
     }
 
     /**

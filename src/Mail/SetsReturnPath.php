@@ -2,6 +2,8 @@
 
 namespace Chiiya\Common\Mail;
 
+use Symfony\Component\Mime\Address;
+
 /**
  * @property array $callbacks
  */
@@ -12,10 +14,10 @@ trait SetsReturnPath
      *
      * @return $this
      */
-    public function returnPath(string $returnPath): self
+    public function sender(string $address, ?string $name = null): self
     {
-        $this->callbacks[] = function ($message) use ($returnPath) {
-            $message->returnPath($returnPath);
+        $this->callbacks[] = function ($message) use ($address, $name) {
+            return $message->sender(new Address($address, (string) $name));
         };
 
         return $this;
