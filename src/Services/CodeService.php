@@ -31,7 +31,6 @@ class CodeService
      * @var string
      */
     final public const SET_ALPHANUMERIC = '23456789ABCDEFGHKMNPQRSTUVXYZabcdefghkmnpqrstuvxyz';
-
     protected array $existing = [];
     protected array $codes = [];
 

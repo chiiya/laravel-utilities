@@ -151,7 +151,8 @@ abstract class AbstractRepository
     }
 
     /**
-     * @return Builder<TModel>
+     * @return Builder<TModel>|TModel
+     * @phpstan-return Builder<TModel>
      */
     protected function newQuery(): Builder
     {
@@ -187,6 +188,9 @@ abstract class AbstractRepository
 
     /**
      * Apply custom query filters.
+     *
+     * @phpstan-param Builder<TModel> $builder
+     * @phpstan-return Builder<TModel>
      */
     abstract protected function applyFilters(Builder $builder, array $parameters): Builder;
 }
