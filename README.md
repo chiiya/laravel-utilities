@@ -17,7 +17,7 @@ composer require chiiya/laravel-utilities
 You can publish the config file with:
 
 ```bash
-php artisan vendor:publish --tag=":utilities-config"
+php artisan vendor:publish --tag="utilities-config"
 ```
 
 This is the contents of the published config file:
