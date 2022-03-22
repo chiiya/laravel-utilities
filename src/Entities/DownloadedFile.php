@@ -10,7 +10,7 @@ class DownloadedFile
 
     public function getPath(): string
     {
-        return $this->getPath();
+        return $this->path;
     }
 
     public function getFileName(): string

@@ -23,6 +23,7 @@ class Zipper
         if ($status !== true) {
             throw new ZipperException('Could not open archive. ZIPARCHIVE-ERROR-CODE: '.$status);
         }
+
         $information = pathinfo($location);
         $location = $this->getTemporaryFileLocation($information['filename']);
         $this->zip->extractTo($location);
@@ -36,7 +37,7 @@ class Zipper
      */
     protected function getTemporaryFileLocation(string $filename): string
     {
-        $path = trim(config('utilities.tmp_path'), DIRECTORY_SEPARATOR);
+        $path = rtrim(config('utilities.tmp_path'), DIRECTORY_SEPARATOR);
 
         return $path.DIRECTORY_SEPARATOR.$filename;
     }
