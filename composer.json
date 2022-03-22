@@ -38,6 +38,13 @@
       "dealerdirect/phpcodesniffer-composer-installer": true
     }
   },
+  "extra": {
+    "laravel": {
+      "providers": [
+        "Chiiya\\Common\\LaravelUtilitiesServiceProvider"
+      ]
+    }
+  },
   "minimum-stability": "dev",
   "prefer-stable": true
 }
