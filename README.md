@@ -179,7 +179,7 @@ $service->import(storage_path('app/exports'));
 $service->generate(
     1_000_000,
     '####-####-####',
-    CodeService::PATTERN_NUMBERS_AND_UPPERCASE,
+    CodeService::SET_NUMBERS_AND_UPPERCASE,
 );
 // Get generated codes for further processing (e.g. database inserts)
 $codes = $service->getCodes();

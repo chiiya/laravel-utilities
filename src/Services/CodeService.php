@@ -16,21 +16,22 @@ class CodeService
      *
      * @var string
      */
-    final public const PATTERN_NUMBERS = '1234567890';
+    final public const SET_NUMBERS = '1234567890';
 
     /**
      * Numbers and uppercase characters without similar looking ones (IJL1O0) and W (problematic character length).
      *
      * @var string
      */
-    final public const PATTERN_NUMBERS_AND_UPPERCASE = '23456789ABCDEFGHKMNPQRSTUVXYZ';
+    final public const SET_NUMBERS_AND_UPPERCASE = '23456789ABCDEFGHKMNPQRSTUVXYZ';
 
     /**
      * Alphanumeric characters without similar looking ones (IJL1O0) and W (problematic character length).
      *
      * @var string
      */
-    final public const PATTERN_ALPHANUMERIC = '23456789ABCDEFGHKMNPQRSTUVXYZabcdefghkmnpqrstuvxyz';
+    final public const SET_ALPHANUMERIC = '23456789ABCDEFGHKMNPQRSTUVXYZabcdefghkmnpqrstuvxyz';
+
     protected array $existing = [];
     protected array $codes = [];
 
@@ -70,7 +71,7 @@ class CodeService
     public function generate(
         int $amount,
         string $pattern = '####-####-####',
-        string $characters = self::PATTERN_NUMBERS_AND_UPPERCASE,
+        string $characters = self::SET_NUMBERS_AND_UPPERCASE,
         ?ProgressBar $bar = null,
     ): void {
         $count = $amount;
