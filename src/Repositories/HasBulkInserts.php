@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Chiiya\Common\Repositories;
 
@@ -12,6 +12,7 @@ trait HasBulkInserts
     public function bulkInsert(array $data): void
     {
         $values = '';
+
         foreach ($data as $row) {
             $attributes = implode(', ', array_map(function ($attribute) {
                 if ($attribute === null) {
@@ -24,10 +25,8 @@ trait HasBulkInserts
         }
         $values = rtrim($values, ', ');
 
-        $query = 'INSERT INTO '.$this->model->getTable().' ';
-        $columns = '('.implode(', ', array_map(function ($column) {
-            return '`'.$column.'`';
-        }, $this->bulkInsertColumns())).')';
+        $query = 'INSERT INTO '.$this->instance->getTable().' ';
+        $columns = '('.implode(', ', array_map(fn ($column) => '`'.$column.'`', $this->bulkInsertColumns())).')';
         $field = $this->bulkInsertColumns()[0];
         $query .= $columns.' VALUES '.$values.' ON DUPLICATE KEY UPDATE '.$field.'='.$field.';';
 

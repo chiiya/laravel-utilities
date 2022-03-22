@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Chiiya\Common\Services;
 
@@ -7,6 +7,7 @@ use Box\Spout\Reader\Common\Creator\ReaderEntityFactory;
 use Box\Spout\Reader\Exception\ReaderNotOpenedException;
 use Box\Spout\Reader\XLSX\Reader;
 use Box\Spout\Reader\XLSX\SheetIterator;
+use Iterator;
 
 class ExcelReader
 {
@@ -28,10 +29,8 @@ class ExcelReader
      * Get the sheet iterator.
      *
      * @throws ReaderNotOpenedException
-     *
-     * @return SheetIterator|\Iterator
      */
-    public function getSheetIterator()
+    public function getSheetIterator(): Iterator|SheetIterator
     {
         return $this->reader->getSheetIterator();
     }

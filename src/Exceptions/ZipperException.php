@@ -1,7 +1,9 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Chiiya\Common\Exceptions;
 
-class ZipperException extends \RuntimeException
+use RuntimeException;
+
+class ZipperException extends RuntimeException
 {
 }

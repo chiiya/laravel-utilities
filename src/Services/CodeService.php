@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Chiiya\Common\Services;
 
@@ -13,28 +13,32 @@ class CodeService
 {
     /**
      * Numbers only.
+     *
+     * @var string
      */
-    public const PATTERN_NUMBERS = '1234567890';
+    final public const PATTERN_NUMBERS = '1234567890';
 
     /**
      * Numbers and uppercase characters without similar looking ones (IJL1O0) and W (problematic character length).
+     *
+     * @var string
      */
-    public const PATTERN_NUMBERS_AND_UPPERCASE = '23456789ABCDEFGHKMNPQRSTUVXYZ';
+    final public const PATTERN_NUMBERS_AND_UPPERCASE = '23456789ABCDEFGHKMNPQRSTUVXYZ';
 
     /**
      * Alphanumeric characters without similar looking ones (IJL1O0) and W (problematic character length).
+     *
+     * @var string
      */
-    public const PATTERN_ALPHANUMERIC = '23456789ABCDEFGHKMNPQRSTUVXYZabcdefghkmnpqrstuvxyz';
-
+    final public const PATTERN_ALPHANUMERIC = '23456789ABCDEFGHKMNPQRSTUVXYZabcdefghkmnpqrstuvxyz';
     protected array $existing = [];
     protected array $codes = [];
 
     public function __construct(
         protected CsvReader $reader,
         protected CsvWriter $writer,
-        protected Filesystem $filesystem
-    ) {
-    }
+        protected Filesystem $filesystem,
+    ) {}
 
     /**
      * Import previously generated codes from CSV files into memory.
@@ -48,6 +52,7 @@ class CodeService
 
         foreach ($files as $file) {
             $this->reader->open($file->getRealPath());
+
             foreach ($this->reader->rows() as $row) {
                 $value = trim($row->getCellAtIndex(0)->getValue());
                 $this->existing[$value] = $value;
@@ -66,13 +71,14 @@ class CodeService
         int $amount,
         string $pattern = '####-####-####',
         string $characters = self::PATTERN_NUMBERS_AND_UPPERCASE,
-        ?ProgressBar $bar = null
+        ?ProgressBar $bar = null,
     ): void {
         $count = $amount;
 
         while ($count > 0) {
             $code = $this->generateOne($pattern, $characters);
-            if (isset($this->codes[$code]) === false && isset($this->existing[$code]) === false) {
+
+            if (! isset($this->codes[$code]) && ! isset($this->existing[$code])) {
                 $this->codes[$code] = true;
                 --$count;
                 $bar?->advance();
@@ -148,8 +154,12 @@ class CodeService
      */
     protected function generateOne(string $pattern, string $characters): string
     {
-        return implode('', array_map(function (string $char) use ($characters) {
-            return $char === '#' ? $characters[random_int(0, strlen($characters) - 1)] : $char;
-        }, str_split($pattern)));
+        return implode(
+            '',
+            array_map(fn (string $char) => $char === '#' ? $characters[random_int(
+                0,
+                mb_strlen($characters) - 1,
+            )] : $char, mb_str_split($pattern)),
+        );
     }
 }

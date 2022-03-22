@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Chiiya\Common\Services;
 
@@ -62,7 +62,7 @@ class ExcelWriter
      */
     public function addHeaderRow(array $data): void
     {
-        $style = (new StyleBuilder())
+        $style = (new StyleBuilder)
             ->setFontBold()
             ->setFontColor(Color::WHITE)
             ->setBackgroundColor(Color::DARK_BLUE)

@@ -2,11 +2,13 @@
 # https://www.kernel.org/pub/software/scm/git/docs/gitattributes.html
 
 # Ignore all test and documentation with "export-ignore".
-/.gitattributes             export-ignore
-/.gitignore                 export-ignore
-/phpunit.xml                export-ignore
-/tests                      export-ignore
-/.editorconfig              export-ignore
-/.php.cs                    export-ignore
-/JUSTFILE                   export-ignore
-/.pre-commit-config.yaml    export-ignore
+/.github                  export-ignore
+/.gitattributes           export-ignore
+/.gitignore               export-ignore
+/.editorconfig            export-ignore
+/JUSTFILE                 export-ignore
+/ecs.php                  export-ignore
+/grumphp.yml              export-ignore
+/rector.php               export-ignore
+/tlint.json               export-ignore
+/.php-cs-fixer.dist.php   export-ignore

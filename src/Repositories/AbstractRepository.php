@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Chiiya\Common\Repositories;
 
@@ -8,20 +8,36 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
+/**
+ * @template TModel of \Illuminate\Database\Eloquent\Model
+ */
 abstract class AbstractRepository
 {
-    protected Model $model;
-    protected static string $orderBy = 'id';
-    protected static string $orderDirection = 'ASC';
+    /**
+     * The name of the factory's corresponding model.
+     *
+     * @var class-string<TModel>
+     */
+    protected string $model;
+    protected Model $instance;
+    protected string $orderBy = 'id';
+    protected string $orderDirection = 'ASC';
+
+    public function __construct()
+    {
+        $this->instance = new $this->model;
+    }
 
     /**
      * Fetch an entity by its id.
      *
      * @throws ModelNotFoundException
+     *
+     * @return TModel
      */
     public function get(int|string $id, array $parameters = []): Model
     {
-        $query = $this->model->newQuery()->where($this->model->getKeyName(), $id);
+        $query = $this->newQuery()->where($this->instance->getKeyName(), $id);
         $query = $this->applyFilters($query, $parameters);
         $query = $this->applyEagerLoads($query, $parameters);
 
@@ -32,10 +48,12 @@ abstract class AbstractRepository
      * Find an entity by supplied parameters.
      *
      * @throws ModelNotFoundException
+     *
+     * @return TModel
      */
     public function find(array $parameters = []): Model
     {
-        $query = $this->model->newQuery()->orderBy(static::$orderBy, static::$orderDirection);
+        $query = $this->newQuery()->orderBy($this->orderBy, $this->orderDirection);
         $query = $this->applyFilters($query, $parameters);
         $query = $this->applyEagerLoads($query, $parameters);
 
@@ -45,11 +63,11 @@ abstract class AbstractRepository
     /**
      * Get a list of all entities.
      *
-     * @return Model[]|Collection
+     * @return Collection<int, TModel>
      */
-    public function index(array $parameters = [])
+    public function index(array $parameters = []): Collection
     {
-        $query = $this->model->newQuery()->orderBy(static::$orderBy, static::$orderDirection);
+        $query = $this->newQuery()->orderBy($this->orderBy, $this->orderDirection);
         $query = $this->applyFilters($query, $parameters);
         $query = $this->applyEagerLoads($query, $parameters);
 
@@ -59,15 +77,15 @@ abstract class AbstractRepository
     /**
      * Search entities.
      *
-     * @return Model[]|Collection|LengthAwarePaginator
+     * @return Collection<int, TModel>|LengthAwarePaginator
      */
-    public function search(?string $search, array $parameters = [])
+    public function search(?string $search, array $parameters = []): LengthAwarePaginator
     {
-        $query = $this->model->newQuery()->orderBy(static::$orderBy, static::$orderDirection);
+        $query = $this->newQuery()->orderBy($this->orderBy, $this->orderDirection);
         $query = $this->applyFilters($query, $parameters);
         $query = $this->applyEagerLoads($query, $parameters);
 
-        $query = $query->where(function (Builder $builder) use ($search) {
+        $query = $query->where(function (Builder $builder) use ($search): void {
             foreach ($this->searchableFields() as $field) {
                 if (is_array($field)) {
                     $builder->orWhereRaw('CONCAT('.implode(", ' ', ", $field).') LIKE ?', ['%'.$search.'%']);
@@ -82,14 +100,18 @@ abstract class AbstractRepository
 
     /**
      * Create a new entity instance and store it in database.
+     *
+     * @return TModel
      */
     public function create(array $attributes): Model
     {
-        return $this->model->newQuery()->create($attributes);
+        return $this->newQuery()->create($attributes);
     }
 
     /**
      * Delete an entity from database.
+     *
+     * @param TModel $model
      */
     public function delete(Model $model): void
     {
@@ -98,6 +120,8 @@ abstract class AbstractRepository
 
     /**
      * Update an existing entity in database.
+     *
+     * @param TModel $model
      */
     public function update(Model $model, array $attributes): void
     {
@@ -107,10 +131,12 @@ abstract class AbstractRepository
 
     /**
      * Create a new entity instance without storing it in database.
+     *
+     * @return TModel
      */
     public function newInstance(array $attributes = []): Model
     {
-        return $this->model->newInstance($attributes);
+        return $this->instance->newInstance($attributes);
     }
 
     /**
@@ -118,14 +144,25 @@ abstract class AbstractRepository
      */
     public function count(array $parameters = []): int
     {
-        $query = $this->model->newQuery();
+        $query = $this->newQuery();
         $query = $this->applyFilters($query, $parameters);
 
         return $query->count();
     }
 
     /**
+     * @return Builder<TModel>
+     */
+    protected function newQuery(): Builder
+    {
+        return $this->instance->newQuery();
+    }
+
+    /**
      * Apply eager loads.
+     *
+     * @phpstan-param Builder<TModel> $builder
+     * @phpstan-return Builder<TModel>
      */
     protected function applyEagerLoads(Builder $builder, array $parameters): Builder
     {

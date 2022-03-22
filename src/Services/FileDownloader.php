@@ -1,43 +1,32 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Chiiya\Common\Services;
 
+use Chiiya\Common\Entities\DownloadedFile;
 use GuzzleHttp\Client;
+use GuzzleHttp\Psr7\Utils;
 use Illuminate\Contracts\Filesystem\Filesystem;
 
 class FileDownloader
 {
-    protected Client $client;
-    protected Filesystem $filesystem;
-
-    /**
-     * FileDownloader constructor.
-     */
-    public function __construct(Client $client, Filesystem $filesystem)
-    {
-        $this->client = $client;
-        $this->filesystem = $filesystem;
-    }
+    public function __construct(
+        protected Client $client,
+        protected Filesystem $filesystem,
+    ) {}
 
     /**
      * Download file from given URL.
      */
-    public function download(string $url): string
+    public function download(string $url): DownloadedFile
     {
         $info = pathinfo($url);
         $filename = $info['basename'];
-        $this->createTemporaryFile($filename);
-        $this->client->get($url, ['sink' => $this->getTemporaryFileLocation($filename)]);
+        $path = $this->getTemporaryFileLocation($filename);
+        $resource = Utils::tryFopen($path, 'w');
+        $stream = Utils::streamFor($resource);
+        $this->client->get($url, ['sink' => $stream]);
 
-        return $this->getTemporaryFileLocation($filename);
-    }
-
-    /**
-     * Delete the temporary file.
-     */
-    public function deleteTemporaryFile(string $location): void
-    {
-        $this->filesystem->delete($location);
+        return new DownloadedFile($path);
     }
 
     /**
@@ -45,14 +34,8 @@ class FileDownloader
      */
     protected function getTemporaryFileLocation(string $filename): string
     {
-        return storage_path('app/tmp').'/'.$filename;
-    }
+        $path = trim(config('utilities.tmp_path'), DIRECTORY_SEPARATOR);
 
-    /**
-     * Create the temporary download file.
-     */
-    protected function createTemporaryFile(string $filename): void
-    {
-        fopen($this->getTemporaryFileLocation($filename), 'wb');
+        return $path.DIRECTORY_SEPARATOR.$filename;
     }
 }

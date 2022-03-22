@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Chiiya\Common\Mail;
 
@@ -11,14 +11,10 @@ trait SetsSender
 {
     /**
      * Set the sender (return path) for the message.
-     *
-     * @return $this
      */
-    public function sender(string $address, ?string $name = null): self
+    public function sender(string $address, ?string $name = null): static
     {
-        $this->callbacks[] = function ($message) use ($address, $name) {
-            return $message->sender(new Address($address, (string) $name));
-        };
+        $this->callbacks[] = fn ($message) => $message->sender(new Address($address, (string) $name));
 
         return $this;
     }

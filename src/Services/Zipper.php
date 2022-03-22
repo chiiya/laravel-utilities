@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Chiiya\Common\Services;
 
@@ -7,15 +7,9 @@ use ZipArchive;
 
 class Zipper
 {
-    protected ZipArchive $zip;
-
-    /**
-     * Zipper constructor.
-     */
-    public function __construct(ZipArchive $zip)
-    {
-        $this->zip = $zip;
-    }
+    public function __construct(
+        protected ZipArchive $zip,
+    ) {}
 
     /**
      * Extract a zipped file.
@@ -25,6 +19,7 @@ class Zipper
     public function unzip(string $location): string
     {
         $status = $this->zip->open($location);
+
         if ($status !== true) {
             throw new ZipperException('Could not open archive. ZIPARCHIVE-ERROR-CODE: '.$status);
         }
@@ -41,6 +36,8 @@ class Zipper
      */
     protected function getTemporaryFileLocation(string $filename): string
     {
-        return storage_path('app/tmp').'/'.$filename;
+        $path = trim(config('utilities.tmp_path'), DIRECTORY_SEPARATOR);
+
+        return $path.DIRECTORY_SEPARATOR.$filename;
     }
 }
