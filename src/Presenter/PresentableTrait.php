@@ -4,16 +4,11 @@ namespace Chiiya\Common\Presenter;
 
 /**
  * @template TPresenter of \Chiiya\Common\Presenter\Presenter
+ *
+ * @property class-string<TPresenter> $presenter
  */
 trait PresentableTrait
 {
-    /**
-     * The name of the presenter class.
-     *
-     * @var class-string<TPresenter>
-     */
-    protected string $presenter;
-
     /**
      * Presenter instance.
      *
