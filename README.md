@@ -85,11 +85,9 @@ class UserPresenter extends \Chiiya\Common\Presenter\Presenter
 ```
 
 ```php
-/**
- * @extends PresentableTrait<UserPresenter>
- */
 class User extends Model
 {
+    /** @use PresentableTrait<UserPresenter> */
     use \Chiiya\Common\Presenter\PresentableTrait;
     
     protected string $presenter = UserPresenter::class;
