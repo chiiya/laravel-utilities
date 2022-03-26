@@ -14,7 +14,7 @@ You can install the package via composer:
 composer require chiiya/laravel-utilities
 ```
 
-You can publish the config file with:
+You can optionally publish the config file with:
 
 ```bash
 php artisan vendor:publish --tag="utilities-config"
@@ -37,25 +37,43 @@ return [
 ## Usage
 
 <details>
- <summary><code>TimedCommand</code></summary>
+ <summary><code>TimedCommand</code> - Print command execution time</summary>
 
+<br>
 
 Simple extension of the Laravel `Command` that prints execution time after completion.
 
 ```php
-class YourCommand extends \Chiiya\Common\Commands\TimedCommand
+use Chiiya\Common\Commands\TimedCommand;  
+  
+class SendEmails extends TimedCommand
+{
+    protected $signature = 'mail:send {user}';
+    
+    public function handle(DripEmailer $drip)
+    {
+        $drip->send(User::find($this->argument('user')));
+    }  
+```
+```bash
+$ php artisan mail:send 1
+> Execution time: 0.1s  
 ```
 </details>
 
 <details>
- <summary><code>SetsSender</code></summary>
+ <summary><code>SetsSender</code> - Set sender for mailables</summary>
 
+<br>
+  
 Trait to set the sender (return path) for mailables for e.g. bounce handling.
 
 ```php
+use Chiiya\Common\Mail\SetsSender;
+  
 class OrderShipped extends Mailables
 {
-    use \Chiiya\Common\Mail\SetsSender;
+    use SetsSender;
 
     public function build(): self
     {
@@ -69,13 +87,17 @@ class OrderShipped extends Mailables
 </details>
 
 <details>
- <summary><code>PresentableTrait</code></summary>
+ <summary><code>PresentableTrait</code> - View presenters for eloquent models</summary>
 
+<br>
+  
 View presenter similar to the no longer maintained [`laracasts/presenter`](https://github.com/laracasts/Presenter)
-package.
+package. Useful for doing some manipulations before displaying data.
 
 ```php
-class UserPresenter extends \Chiiya\Common\Presenter\Presenter
+use Chiiya\Common\Presenter\Presenter;
+  
+class UserPresenter extends Presenter
 {
     public function name(): string
     {
@@ -85,10 +107,12 @@ class UserPresenter extends \Chiiya\Common\Presenter\Presenter
 ```
 
 ```php
+use Chiiya\Common\Presenter\PresentableTrait;
+  
 class User extends Model
 {
     /** @use PresentableTrait<UserPresenter> */
-    use \Chiiya\Common\Presenter\PresentableTrait;
+    use PresentableTrait;
     
     protected string $presenter = UserPresenter::class;
 }
@@ -100,15 +124,29 @@ class User extends Model
 </details>
 
 <details>
- <summary><code>AbstractRepository</code></summary>
+ <summary><code>AbstractRepository</code> - Base repository for the repository pattern</summary>
 
-Base repository for usage of the repository pattern.
+<br>
+  
+Base repository for usage of the repository pattern. It provides `get`, `find`, `index`, `search`, `count`, `create`,
+`update` and `delete` methods for the configured `$model`. Most methods accept an optional `$filters` parameter,
+that may be used to apply the filters configured in the `applyFilters` method to your queries.
+  
+A general recommendation is to only use repositories as a place to store your complex queries and/or queries that 
+are used repeatedly in multiple places, since otherwise they might be considered an anti-pattern. For more complex queries
+it can however be useful to separate them from your services. Repositories also serve as a way to self-document those
+queries by using descriptive method names. This way developers don't have to parse database queries and try to understand
+their purpose when going through your application logic.
+
+<br>
 
 ```php
+use Chiiya\Common\Repositories\AbstractRepository;
+
 /**
  * @extends AbstractRepository<Post>
  */
-class PostRepository extends \Chiiya\Common\Repositories\AbstractRepository
+class PostRepository extends AbstractRepository
 {
     protected string $model = Post::class;
 
@@ -164,33 +202,47 @@ $posts = $repository->postsDiscussedYesterday();
 </details>
 
 <details>
- <summary><code>CodeService</code></summary>
+ <summary><code>CodeService</code> - Generate large amounts of random codes</summary>
 
-Service for generating unique random codes.
+<br>
+
+Service class for efficiently generating large amounts of random, unique codes in memory
+for later processing.
 
 ```php
-$service = resolve(\Chiiya\Common\Services\CodeService::class);
-
-// Optional, import previously generated codes so that we don't generate codes that already exist
-$service->import(storage_path('app/exports'));
-// Generate specified amount of random codes using the given pattern and character set
-$service->generate(
-    1_000_000,
-    '####-####-####',
-    CodeService::SET_NUMBERS_AND_UPPERCASE,
-);
-// Get generated codes for further processing (e.g. database inserts)
-$codes = $service->getCodes();
-// Export newly generated codes into (batched) CSV files. Optionally specify the amount of
-// codes per file
-$service->export(storage_path('app/exports'));
-$service->export(path: storage_path('app/exports'), perFile: 500_000);
+use Chiiya\Common\Services\CodeService::class;
+          
+class CouponService {
+    public function __construct(
+        private CodeService $service,
+    ) {}
+          
+    public function generateCodes()
+    {
+        // Optional, import previously exported codes so that we don't generate codes that already exist
+        $this->service->import(storage_path('app/exports'));
+        // Generate specified amount of random codes using the given pattern and character set
+        $this->service->generate(
+            1_000_000,
+            '####-####-####',
+            CodeService::SET_NUMBERS_AND_UPPERCASE,
+        );
+        // Get generated codes for further processing
+        $codes = $this->service->getCodes();
+        // ... e.g. bulk insert $codes into database
+        // Export newly generated codes into (batched) CSV files. Optionally specify the amount of codes per file
+        $this->service->export(storage_path('app/exports'));
+        $this->service->export(path: storage_path('app/exports'), perFile: 500_000);
+    }
+}
 ```
 </details>
 
 
 <details>
- <summary><code>CsvReader</code></summary>
+ <summary><code>CsvReader</code> - Read CSV files</summary>
+
+<br>
 
 Small wrapper around the [`box/spout`](https://opensource.box.com/spout/) csv reader for high-performance
 reading of CSV files:
@@ -205,9 +257,10 @@ $reader->close();
 ```
 </details>
 
-
 <details>
- <summary><code>CsvWriter</code></summary>
+ <summary><code>CsvWriter</code> - Write CSV files</summary>
+
+<br>
 
 Small wrapper around the [`box/spout`](https://opensource.box.com/spout/) csv writer:
 
@@ -219,9 +272,10 @@ $writer->close();
 ```
 </details>
 
-
 <details>
- <summary><code>ExcelReader</code></summary>
+ <summary><code>ExcelReader</code> - Read XLS/XLSX files</summary>
+
+<br>
 
 Small wrapper around the [`box/spout`](https://opensource.box.com/spout/) excel reader for high-performance
 reading of XLS/XLSX files:
@@ -240,7 +294,9 @@ $reader->close();
 
 
 <details>
- <summary><code>ExcelWriter</code></summary>
+  <summary><code>ExcelWriter</code> - Write XLX/XLSX files</summary>
+
+<br>
 
 Small wrapper around the [`box/spout`](https://opensource.box.com/spout/) excel writer:
 
@@ -258,7 +314,9 @@ $writer->close();
 
 
 <details>
- <summary><code>FileDownloader</code></summary>
+ <summary><code>FileDownloader</code> - Download remote files</summary>
+
+<br>
 
 Utility class for downloading files from a remote URL.
 
@@ -272,7 +330,9 @@ $file->delete();
 
 
 <details>
- <summary><code>Zipper</code></summary>
+ <summary><code>Zipper</code> - Unzip .zip files</summary>
+
+<br>
 
 Utility class for unzipping .zip files.
 
