@@ -96,7 +96,8 @@ package. Useful for doing some manipulations before displaying data.
 
 ```php
 use Chiiya\Common\Presenter\Presenter;
-  
+
+/** @extends Presenter<User> */  
 class UserPresenter extends Presenter
 {
     public function name(): string
