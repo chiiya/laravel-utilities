@@ -2,12 +2,16 @@
 
 namespace Chiiya\Common\Presenter;
 
-use Illuminate\Database\Eloquent\Model;
-
+/**
+ * @template TEntity of object
+ */
 abstract class Presenter
 {
+    /**
+     * @param TEntity $entity
+     */
     public function __construct(
-        protected Model $entity,
+        protected object $entity,
     ) {}
 
     /**
