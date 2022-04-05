@@ -2,6 +2,14 @@
 
 All notable changes to `laravel-passes` will be documented in this file.
 
+## v4.3.0 - 2022-04-05
+
+### What's Changed
+
+- Make presenter compatible with any object, not just Eloquent models
+
+**Full Changelog**: https://github.com/chiiya/laravel-utilities/compare/4.2.0...4.3.0
+
 ## v4.2.0 - 2022-04-05
 
 ### What's Changed
