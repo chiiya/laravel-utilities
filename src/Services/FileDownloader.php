@@ -5,7 +5,7 @@ namespace Chiiya\Common\Services;
 use Chiiya\Common\Entities\DownloadedFile;
 use GuzzleHttp\Client;
 use GuzzleHttp\Psr7\Utils;
-use Illuminate\Contracts\Filesystem\Filesystem;
+use Illuminate\Filesystem\Filesystem;
 
 class FileDownloader
 {

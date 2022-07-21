@@ -6,7 +6,7 @@ use Box\Spout\Common\Exception\IOException;
 use Box\Spout\Reader\Exception\ReaderNotOpenedException;
 use Box\Spout\Writer\Exception\WriterNotOpenedException;
 use Exception;
-use Illuminate\Contracts\Filesystem\Filesystem;
+use Illuminate\Filesystem\Filesystem;
 use Symfony\Component\Console\Helper\ProgressBar;
 
 class CodeService
