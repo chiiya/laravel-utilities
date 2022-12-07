@@ -31,9 +31,9 @@ abstract class AbstractRepository
     /**
      * Fetch an entity by its id.
      *
-     * @throws ModelNotFoundException
-     *
      * @return TModel
+     *
+     * @throws ModelNotFoundException
      */
     public function get(int|string $id, array $parameters = []): Model
     {
@@ -47,9 +47,9 @@ abstract class AbstractRepository
     /**
      * Find an entity by supplied parameters.
      *
-     * @throws ModelNotFoundException
-     *
      * @return TModel
+     *
+     * @throws ModelNotFoundException
      */
     public function find(array $parameters = []): Model
     {
@@ -152,6 +152,7 @@ abstract class AbstractRepository
 
     /**
      * @return Builder<TModel>|TModel
+     *
      * @phpstan-return Builder<TModel>
      */
     protected function newQuery(): Builder
@@ -163,6 +164,7 @@ abstract class AbstractRepository
      * Apply eager loads.
      *
      * @phpstan-param Builder<TModel> $builder
+     *
      * @phpstan-return Builder<TModel>
      */
     protected function applyEagerLoads(Builder $builder, array $parameters): Builder
@@ -190,6 +192,7 @@ abstract class AbstractRepository
      * Apply custom query filters.
      *
      * @phpstan-param Builder<TModel> $builder
+     *
      * @phpstan-return Builder<TModel>
      */
     abstract protected function applyFilters(Builder $builder, array $parameters): Builder;

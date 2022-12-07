@@ -16,10 +16,10 @@ class CsvWriter
      *
      * @throws IOException
      */
-    public function open(string $path): void
+    public function open(string $path, string $delimiter = ';'): void
     {
         $this->writer = WriterEntityFactory::createCSVWriter();
-        $this->writer->setFieldDelimiter(';');
+        $this->writer->setFieldDelimiter($delimiter);
         $this->writer->openToFile($path);
     }
 
