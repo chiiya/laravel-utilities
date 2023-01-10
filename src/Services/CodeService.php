@@ -2,11 +2,11 @@
 
 namespace Chiiya\Common\Services;
 
-use Box\Spout\Common\Exception\IOException;
-use Box\Spout\Reader\Exception\ReaderNotOpenedException;
-use Box\Spout\Writer\Exception\WriterNotOpenedException;
 use Exception;
 use Illuminate\Filesystem\Filesystem;
+use OpenSpout\Common\Exception\IOException;
+use OpenSpout\Reader\Exception\ReaderNotOpenedException;
+use OpenSpout\Writer\Exception\WriterNotOpenedException;
 use Symfony\Component\Console\Helper\ProgressBar;
 
 class CodeService
@@ -152,7 +152,7 @@ class CodeService
      *
      * @throws Exception
      */
-    protected function generateOne(string $pattern, string $characters): string
+    public function generateOne(string $pattern, string $characters): string
     {
         return implode(
             '',

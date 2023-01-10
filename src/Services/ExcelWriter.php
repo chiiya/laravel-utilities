@@ -2,14 +2,14 @@
 
 namespace Chiiya\Common\Services;
 
-use Box\Spout\Common\Entity\Style\Color;
-use Box\Spout\Common\Exception\IOException;
-use Box\Spout\Writer\Common\Creator\Style\StyleBuilder;
-use Box\Spout\Writer\Common\Creator\WriterEntityFactory;
-use Box\Spout\Writer\Exception\InvalidSheetNameException;
-use Box\Spout\Writer\Exception\WriterAlreadyOpenedException;
-use Box\Spout\Writer\Exception\WriterNotOpenedException;
-use Box\Spout\Writer\XLSX\Writer;
+use OpenSpout\Common\Entity\Row;
+use OpenSpout\Common\Entity\Style\Color;
+use OpenSpout\Common\Entity\Style\Style;
+use OpenSpout\Common\Exception\IOException;
+use OpenSpout\Writer\Exception\InvalidSheetNameException;
+use OpenSpout\Writer\Exception\WriterNotOpenedException;
+use OpenSpout\Writer\XLSX\Options;
+use OpenSpout\Writer\XLSX\Writer;
 
 class ExcelWriter
 {
@@ -19,12 +19,12 @@ class ExcelWriter
      * Open a XLSX file for reading.
      *
      * @throws IOException
-     * @throws WriterAlreadyOpenedException
      */
     public function open(string $path): void
     {
-        $this->writer = WriterEntityFactory::createXLSXWriter();
-        $this->writer->setTempFolder(storage_path('app/tmp'));
+        $options = new Options;
+        $options->setTempFolder(storage_path('app/tmp'));
+        $this->writer = new Writer($options);
         $this->writer->openToFile($path);
     }
 
@@ -60,15 +60,14 @@ class ExcelWriter
      * @throws IOException
      * @throws WriterNotOpenedException
      */
-    public function addHeaderRow(array $data): void
+    public function addHeaderRow(Row|array $data): void
     {
-        $style = (new StyleBuilder)
+        $style = (new Style)
             ->setFontBold()
             ->setFontColor(Color::WHITE)
-            ->setBackgroundColor(Color::DARK_BLUE)
-            ->build();
-
-        $row = WriterEntityFactory::createRowFromArray($data, $style);
+            ->setBackgroundColor(Color::DARK_BLUE);
+        $row = $data instanceof Row ? $data : Row::fromValues($data);
+        $row->setStyle($style);
         $this->writer->addRow($row);
     }
 
@@ -78,10 +77,10 @@ class ExcelWriter
      * @throws IOException
      * @throws WriterNotOpenedException
      */
-    public function write(array $data): void
+    public function write(Row|array $data): void
     {
-        $rowFromValues = WriterEntityFactory::createRowFromArray($data);
-        $this->writer->addRow($rowFromValues);
+        $row = $data instanceof Row ? $data : Row::fromValues($data);
+        $this->writer->addRow($row);
     }
 
     /**

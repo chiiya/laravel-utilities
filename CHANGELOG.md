@@ -1,6 +1,6 @@
 # Changelog
 
-All notable changes to `laravel-passes` will be documented in this file.
+All notable changes to `laravel-utilities` will be documented in this file.
 
 ## v4.5.0 - 2023-01-10
 

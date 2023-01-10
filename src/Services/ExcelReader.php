@@ -2,12 +2,11 @@
 
 namespace Chiiya\Common\Services;
 
-use Box\Spout\Common\Exception\IOException;
-use Box\Spout\Reader\Common\Creator\ReaderEntityFactory;
-use Box\Spout\Reader\Exception\ReaderNotOpenedException;
-use Box\Spout\Reader\XLSX\Reader;
-use Box\Spout\Reader\XLSX\SheetIterator;
-use Iterator;
+use OpenSpout\Common\Exception\IOException;
+use OpenSpout\Reader\Exception\ReaderNotOpenedException;
+use OpenSpout\Reader\XLSX\Options;
+use OpenSpout\Reader\XLSX\Reader;
+use OpenSpout\Reader\XLSX\SheetIterator;
 
 class ExcelReader
 {
@@ -20,8 +19,9 @@ class ExcelReader
      */
     public function open(string $path): void
     {
-        $this->reader = ReaderEntityFactory::createXLSXReader();
-        $this->reader->setTempFolder(storage_path('app/tmp'));
+        $options = new Options;
+        $options->setTempFolder(storage_path('app/tmp'));
+        $this->reader = new Reader($options);
         $this->reader->open($path);
     }
 
@@ -30,7 +30,7 @@ class ExcelReader
      *
      * @throws ReaderNotOpenedException
      */
-    public function getSheetIterator(): Iterator|SheetIterator
+    public function getSheetIterator(): SheetIterator
     {
         return $this->reader->getSheetIterator();
     }

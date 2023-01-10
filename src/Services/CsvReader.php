@@ -2,12 +2,12 @@
 
 namespace Chiiya\Common\Services;
 
-use Box\Spout\Common\Exception\IOException;
-use Box\Spout\Reader\Common\Creator\ReaderEntityFactory;
-use Box\Spout\Reader\CSV\Reader;
-use Box\Spout\Reader\CSV\RowIterator;
-use Box\Spout\Reader\CSV\SheetIterator;
-use Box\Spout\Reader\Exception\ReaderNotOpenedException;
+use OpenSpout\Common\Exception\IOException;
+use OpenSpout\Reader\CSV\Options;
+use OpenSpout\Reader\CSV\Reader;
+use OpenSpout\Reader\CSV\RowIterator;
+use OpenSpout\Reader\CSV\SheetIterator;
+use OpenSpout\Reader\Exception\ReaderNotOpenedException;
 
 class CsvReader
 {
@@ -20,8 +20,9 @@ class CsvReader
      */
     public function open(string $path, string $delimiter = ';'): void
     {
-        $this->reader = ReaderEntityFactory::createCSVReader();
-        $this->reader->setFieldDelimiter($delimiter);
+        $options = new Options;
+        $options->FIELD_DELIMITER = $delimiter;
+        $this->reader = new Reader($options);
         $this->reader->open($path);
     }
 

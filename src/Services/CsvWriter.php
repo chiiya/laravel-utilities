@@ -2,10 +2,11 @@
 
 namespace Chiiya\Common\Services;
 
-use Box\Spout\Common\Exception\IOException;
-use Box\Spout\Writer\Common\Creator\WriterEntityFactory;
-use Box\Spout\Writer\CSV\Writer;
-use Box\Spout\Writer\Exception\WriterNotOpenedException;
+use OpenSpout\Common\Entity\Row;
+use OpenSpout\Common\Exception\IOException;
+use OpenSpout\Writer\CSV\Options;
+use OpenSpout\Writer\CSV\Writer;
+use OpenSpout\Writer\Exception\WriterNotOpenedException;
 
 class CsvWriter
 {
@@ -18,8 +19,9 @@ class CsvWriter
      */
     public function open(string $path, string $delimiter = ';'): void
     {
-        $this->writer = WriterEntityFactory::createCSVWriter();
-        $this->writer->setFieldDelimiter($delimiter);
+        $options = new Options;
+        $options->FIELD_DELIMITER = $delimiter;
+        $this->writer = new Writer($options);
         $this->writer->openToFile($path);
     }
 
@@ -29,10 +31,10 @@ class CsvWriter
      * @throws IOException
      * @throws WriterNotOpenedException
      */
-    public function write(array $data): void
+    public function write(Row|array $data): void
     {
-        $rowFromValues = WriterEntityFactory::createRowFromArray($data);
-        $this->writer->addRow($rowFromValues);
+        $row = $data instanceof Row ? $data : Row::fromValues($data);
+        $this->writer->addRow($row);
     }
 
     /**
