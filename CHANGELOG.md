@@ -2,6 +2,14 @@
 
 All notable changes to `laravel-passes` will be documented in this file.
 
+## v4.5.0 - 2023-01-10
+
+### What's Changed
+
+- Allow defining delimiter for CSV files
+
+**Full Changelog**: https://github.com/chiiya/laravel-utilities/compare/4.4.0...4.5.0
+
 ## v4.4.0 - 2023-01-10
 
 ### What's Changed
