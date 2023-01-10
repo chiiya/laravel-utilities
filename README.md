@@ -245,7 +245,7 @@ class CouponService {
 
 <br>
 
-Small wrapper around the [`box/spout`](https://opensource.box.com/spout/) csv reader for high-performance
+Small wrapper around the [`openspout/openspout`](https://github.com/openspout/openspout) csv reader for high-performance
 reading of CSV files:
 
 ```php
@@ -263,7 +263,7 @@ $reader->close();
 
 <br>
 
-Small wrapper around the [`box/spout`](https://opensource.box.com/spout/) csv writer:
+Small wrapper around the [`openspout/openspout`](https://github.com/openspout/openspout) csv writer:
 
 ```php
 $writer = resolve(\Chiiya\Common\Services\CsvWriter::class);
@@ -278,7 +278,7 @@ $writer->close();
 
 <br>
 
-Small wrapper around the [`box/spout`](https://opensource.box.com/spout/) excel reader for high-performance
+Small wrapper around the [`openspout/openspout`](https://github.com/openspout/openspout) excel reader for high-performance
 reading of XLS/XLSX files:
 
 ```php
@@ -299,7 +299,7 @@ $reader->close();
 
 <br>
 
-Small wrapper around the [`box/spout`](https://opensource.box.com/spout/) excel writer:
+Small wrapper around the [`openspout/openspout`](https://github.com/openspout/openspout) excel writer:
 
 ```php
 $writer = resolve(\Chiiya\Common\Services\ExcelWriter::class);
