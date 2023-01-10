@@ -2,6 +2,18 @@
 
 All notable changes to `laravel-utilities` will be documented in this file.
 
+## v5.0.0 - 2023-01-10
+
+### What's Changed
+
+- Replace `box/spout` with `openspout/openspout`
+
+### Breaking Changes
+
+- Replace `Box\Spout` with `OpenSpout` in your code
+
+**Full Changelog**: https://github.com/chiiya/laravel-utilities/compare/4.5.0...5.0.0
+
 ## v4.5.0 - 2023-01-10
 
 ### What's Changed
