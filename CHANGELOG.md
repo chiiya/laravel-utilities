@@ -2,6 +2,14 @@
 
 All notable changes to `laravel-passes` will be documented in this file.
 
+## v4.4.0 - 2023-01-10
+
+### What's Changed
+
+- Replace `Illuminate\Contracts\Filesystem\Filesystem` with `Illuminate\Filesystem\Filesystem`
+
+**Full Changelog**: https://github.com/chiiya/laravel-utilities/compare/4.3.0...4.4.0
+
 ## v4.3.0 - 2022-04-05
 
 ### What's Changed
