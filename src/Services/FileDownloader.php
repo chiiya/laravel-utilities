@@ -17,14 +17,14 @@ class FileDownloader
     /**
      * Download file from given URL.
      */
-    public function download(string $url): DownloadedFile
+    public function download(string $url, array $options = []): DownloadedFile
     {
         $info = pathinfo($url);
         $filename = $info['basename'];
         $path = $this->getTemporaryFileLocation($filename);
         $resource = Utils::tryFopen($path, 'w');
         $stream = Utils::streamFor($resource);
-        $this->client->get($url, ['sink' => $stream]);
+        $this->client->get($url, array_merge(['sink' => $stream], $options));
 
         return new DownloadedFile($path);
     }
@@ -34,7 +34,7 @@ class FileDownloader
      */
     protected function getTemporaryFileLocation(string $filename): string
     {
-        $path = rtrim(config('utilities.tmp_path'), DIRECTORY_SEPARATOR);
+        $path = mb_rtrim(config('utilities.tmp_path'), DIRECTORY_SEPARATOR);
 
         return $path.DIRECTORY_SEPARATOR.$filename;
     }
