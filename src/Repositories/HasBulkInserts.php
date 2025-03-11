@@ -27,7 +27,10 @@ trait HasBulkInserts
 
         $query = 'INSERT INTO '.$this->instance->getTable().' ';
         $columns = '('.implode(', ', array_map(fn ($column) => '`'.$column.'`', $this->bulkInsertColumns())).')';
-        $fields = implode(', ', array_map(fn ($column) => $column.'='.$column, $this->bulkInsertUpdatedColumns()));
+        $fields = implode(
+            ', ',
+            array_map(fn ($column) => $column.'=VALUES('.$column.')', $this->bulkInsertUpdatedColumns()),
+        );
 
         $query .= $columns.' VALUES '.$values.' ON DUPLICATE KEY UPDATE '.$fields.';';
 
