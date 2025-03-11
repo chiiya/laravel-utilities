@@ -23,15 +23,21 @@ trait HasBulkInserts
             }, $row));
             $values .= '('.$attributes.'), ';
         }
-        $values = rtrim($values, ', ');
+        $values = mb_rtrim($values, ', ');
 
         $query = 'INSERT INTO '.$this->instance->getTable().' ';
         $columns = '('.implode(', ', array_map(fn ($column) => '`'.$column.'`', $this->bulkInsertColumns())).')';
-        $field = $this->bulkInsertColumns()[0];
-        $query .= $columns.' VALUES '.$values.' ON DUPLICATE KEY UPDATE '.$field.'='.$field.';';
+        $fields = implode(', ', array_map(fn ($column) => $column.'='.$column, $this->bulkInsertUpdatedColumns()));
+
+        $query .= $columns.' VALUES '.$values.' ON DUPLICATE KEY UPDATE '.$fields.';';
 
         DB::statement($query);
     }
 
     abstract protected function bulkInsertColumns(): array;
+
+    protected function bulkInsertUpdatedColumns(): array
+    {
+        return [$this->bulkInsertColumns()[0]];
+    }
 }
