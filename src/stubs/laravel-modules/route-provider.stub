@@ -1,0 +1,22 @@
+<?php
+
+namespace $NAMESPACE$;
+
+use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvider;
+use Illuminate\Support\Facades\Route;
+
+class $CLASS$ extends ServiceProvider
+{
+    /**
+     * Register any model bindings or pattern based filters.
+     */
+    public function boot(): void
+    {
+        $this->routes(static function (): void {
+            Route::middleware('web')->group(app_path('$MODULE$/$WEB_ROUTES_PATH$'));
+            Route::prefix('api')
+                ->middleware('api')
+                ->group(app_path('$MODULE$/$API_ROUTES_PATH$'));
+        });
+    }
+}
