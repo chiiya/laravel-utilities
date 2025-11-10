@@ -54,7 +54,7 @@ class CodeService
             $this->reader->open($file->getRealPath());
 
             foreach ($this->reader->rows() as $row) {
-                $value = trim($row->getCellAtIndex(0)->getValue());
+                $value = mb_trim($row->getCellAtIndex(0)->getValue());
                 $this->existing[$value] = $value;
             }
             $this->reader->close();
@@ -96,7 +96,7 @@ class CodeService
      */
     public function export(string $path, int $perFile = 1000000, ?ProgressBar $bar = null): array
     {
-        $path = rtrim($path, DIRECTORY_SEPARATOR);
+        $path = mb_rtrim($path, DIRECTORY_SEPARATOR);
         $date = date('Ymdhi');
         $batch = 1;
         $count = 0;

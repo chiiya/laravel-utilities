@@ -60,7 +60,7 @@ class ExcelWriter
      * @throws IOException
      * @throws WriterNotOpenedException
      */
-    public function addHeaderRow(Row|array $data): void
+    public function addHeaderRow(array|Row $data): void
     {
         $style = (new Style)
             ->setFontBold()
@@ -77,7 +77,7 @@ class ExcelWriter
      * @throws IOException
      * @throws WriterNotOpenedException
      */
-    public function write(Row|array $data): void
+    public function write(array|Row $data): void
     {
         $row = $data instanceof Row ? $data : Row::fromValues($data);
         $this->writer->addRow($row);

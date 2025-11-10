@@ -31,7 +31,7 @@ class CsvWriter
      * @throws IOException
      * @throws WriterNotOpenedException
      */
-    public function write(Row|array $data): void
+    public function write(array|Row $data): void
     {
         $row = $data instanceof Row ? $data : Row::fromValues($data);
         $this->writer->addRow($row);

@@ -7,7 +7,6 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
-use Illuminate\Database\Query\Builder as QueryBuilder;
 
 /**
  * @template TModel of \Illuminate\Database\Eloquent\Model
@@ -89,9 +88,9 @@ abstract class AbstractRepository
         $query = $query->where(function (Builder $builder) use ($search): void {
             foreach ($this->searchableFields() as $field) {
                 if (is_array($field)) {
-                    $builder->orWhereRaw('CONCAT(' . implode(", ' ', ", $field) . ') LIKE ?', ['%' . $search . '%']);
+                    $builder->orWhereRaw('CONCAT('.implode(", ' ', ", $field).') LIKE ?', ['%'.$search.'%']);
                 } else {
-                    $builder->orWhere($field, 'LIKE', '%' . $search . '%');
+                    $builder->orWhere($field, 'LIKE', '%'.$search.'%');
                 }
             }
         });

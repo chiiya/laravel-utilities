@@ -4,6 +4,4 @@ namespace Chiiya\Common\Exceptions;
 
 use RuntimeException;
 
-class ZipperException extends RuntimeException
-{
-}
+class ZipperException extends RuntimeException {}
