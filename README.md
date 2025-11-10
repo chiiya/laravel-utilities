@@ -331,15 +331,30 @@ $file->delete();
 
 
 <details>
- <summary><code>Zipper</code> - Unzip .zip files</summary>
+ <summary><code>Zipper</code> - Zip and unzip .zip files</summary>
 
 <br>
 
-Utility class for unzipping .zip files.
+Utility class for zipping and unzipping .zip files.
 
 ```php
+// Unzipping
 $zipper = resolve(\Chiiya\Common\Services\Zipper::class);
 $location = $zipper->unzip('/path/to/file.zip');
+
+// Zipping
+$zipper->create('documents.zip')->addDirectory('/path/to/directory')->close();
+$path = $zipper->getZipPath();
+
+// Or with files
+$zipper
+    ->create('documents.zip')
+    ->addFiles([
+        '/path/to/file1',
+        '/path/to/file2',
+    ])
+    ->close();
+$path = $zipper->getZipPath();
 ```
 </details>
 
