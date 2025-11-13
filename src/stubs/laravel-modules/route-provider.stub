@@ -13,10 +13,10 @@ class $CLASS$ extends ServiceProvider
     public function boot(): void
     {
         $this->routes(static function (): void {
-            Route::middleware('web')->group(app_path('$MODULE$/$WEB_ROUTES_PATH$'));
+            Route::middleware('web')->group(module_path('$MODULE$', '$WEB_ROUTES_PATH$'));
             Route::prefix('api')
                 ->middleware('api')
-                ->group(app_path('$MODULE$/$API_ROUTES_PATH$'));
+                ->group(module_path('$MODULE$', '$WEB_ROUTES_PATH$'));
         });
     }
 }
