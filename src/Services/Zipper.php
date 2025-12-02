@@ -3,6 +3,7 @@
 namespace Chiiya\Common\Services;
 
 use Chiiya\Common\Exceptions\ZipperException;
+use Exception;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 use ZipArchive;
@@ -16,24 +17,37 @@ class Zipper
     ) {}
 
     /**
+     * Open a zip archive.
+     */
+    public function open(string $path): self
+    {
+        $this->openZipFile($path);
+        $this->zipPath = $path;
+
+        return $this;
+    }
+
+    /**
      * Extract a zipped file.
      *
      * @throws ZipperException
      */
-    public function unzip(string $location): string
+    public function unzip(?string $path = null): string
     {
-        $status = $this->zip->open($location);
-
-        if ($status !== true) {
-            throw new ZipperException('Could not open archive. ZIPARCHIVE-ERROR-CODE: '.$status);
+        if ($path !== null) {
+            $this->open($path);
         }
 
-        $information = pathinfo($location);
-        $location = $this->getTemporaryFileLocation($information['filename']);
-        $this->zip->extractTo($location);
+        if ($this->zipPath === null) {
+            throw new ZipperException('Missing path to zip archive.');
+        }
+
+        $information = pathinfo($this->zipPath);
+        $path = $this->getTemporaryFileLocation($information['filename']);
+        $this->zip->extractTo($path);
         $this->zip->close();
 
-        return $location;
+        return $path;
     }
 
     /**
@@ -175,6 +189,41 @@ class Zipper
     }
 
     /**
+     * Check whether zip archive is valid.
+     */
+    public function check(string $path): bool
+    {
+        try {
+            $this->openZipFile($path, ZipArchive::CHECKCONS);
+            $this->close();
+        } catch (Exception) {
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * Get a list of files in archive.
+     */
+    public function listFiles(): array
+    {
+        $list = [];
+
+        for ($i = 0; $i < $this->zip->numFiles; ++$i) {
+            $name = $this->zip->getNameIndex($i);
+
+            if ($name === false) {
+                throw new ZipperException('Failed to list files.');
+            }
+
+            $list[] = $name;
+        }
+
+        return $list;
+    }
+
+    /**
      * Get the location for the temporary file that we're creating.
      */
     protected function getTemporaryFileLocation(string $filename): string
@@ -182,5 +231,19 @@ class Zipper
         $path = mb_rtrim(config('utilities.tmp_path'), DIRECTORY_SEPARATOR);
 
         return $path.DIRECTORY_SEPARATOR.$filename;
+    }
+
+    /**
+     * Open a zip file.
+     */
+    protected function openZipFile(string $path, ?int $flags = null): self
+    {
+        $status = $this->zip->open($path, $flags);
+
+        if ($status !== true) {
+            throw new ZipperException('Could not open archive. ZIPARCHIVE-ERROR-CODE: '.$status);
+        }
+
+        return $this;
     }
 }
