@@ -238,7 +238,7 @@ class Zipper
      */
     protected function openZipFile(string $path, ?int $flags = null): self
     {
-        $status = $this->zip->open($path, $flags);
+        $status = $flags !== null ? $this->zip->open($path, $flags) : $this->zip->open($path);
 
         if ($status !== true) {
             throw new ZipperException('Could not open archive. ZIPARCHIVE-ERROR-CODE: '.$status);
