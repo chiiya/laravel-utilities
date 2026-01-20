@@ -195,6 +195,7 @@ class Zipper
     {
         try {
             $this->openZipFile($path, ZipArchive::CHECKCONS);
+            $this->zipPath = $path;
             $this->close();
         } catch (Exception) {
             return false;
