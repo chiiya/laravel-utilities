@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 /**
  * @template TModel of \Illuminate\Database\Eloquent\Model
+ * @template TBuilder of \Illuminate\Database\Eloquent\Builder = Illuminate\Database\Eloquent\Builder<TModel>
  */
 abstract class AbstractRepository
 {
@@ -151,9 +152,7 @@ abstract class AbstractRepository
     }
 
     /**
-     * @return Builder<TModel>|TModel
-     *
-     * @phpstan-return Builder<TModel>
+     * @return TBuilder
      */
     protected function newQuery(): Builder
     {
@@ -163,9 +162,9 @@ abstract class AbstractRepository
     /**
      * Apply eager loads.
      *
-     * @phpstan-param Builder<TModel> $builder
+     * @param TBuilder $builder
      *
-     * @phpstan-return Builder<TModel>
+     * @return TBuilder
      */
     protected function applyEagerLoads(Builder $builder, array $parameters): Builder
     {
@@ -191,9 +190,9 @@ abstract class AbstractRepository
     /**
      * Apply custom query filters.
      *
-     * @phpstan-param Builder<TModel> $builder
+     * @param TBuilder $builder
      *
-     * @phpstan-return Builder<TModel>
+     * @return TBuilder
      */
     protected function applyFilters(Builder $builder, array $parameters): Builder
     {
