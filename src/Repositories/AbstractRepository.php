@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 /**
  * @template TModel of \Illuminate\Database\Eloquent\Model
- * @template TBuilder of \Illuminate\Database\Eloquent\Builder = Illuminate\Database\Eloquent\Builder<TModel>
+ * @template TBuilder of \Illuminate\Database\Eloquent\Builder = \Illuminate\Database\Eloquent\Builder<TModel>
  */
 abstract class AbstractRepository
 {
