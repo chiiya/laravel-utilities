@@ -152,7 +152,9 @@ abstract class AbstractRepository
     }
 
     /**
-     * @return TBuilder
+     * @return TBuilder|TModel
+     *
+     * @phpstan-return TBuilder
      */
     protected function newQuery(): Builder
     {
