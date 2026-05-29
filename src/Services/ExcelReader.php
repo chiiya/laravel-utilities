@@ -19,8 +19,7 @@ class ExcelReader
      */
     public function open(string $path): void
     {
-        $options = new Options;
-        $options->setTempFolder(storage_path('app/tmp'));
+        $options = new Options(tempFolder: storage_path('app/tmp'));
         $this->reader = new Reader($options);
         $this->reader->open($path);
     }

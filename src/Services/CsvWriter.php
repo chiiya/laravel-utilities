@@ -19,8 +19,7 @@ class CsvWriter
      */
     public function open(string $path, string $delimiter = ';'): void
     {
-        $options = new Options;
-        $options->FIELD_DELIMITER = $delimiter;
+        $options = new Options(FIELD_DELIMITER: $delimiter);
         $this->writer = new Writer($options);
         $this->writer->openToFile($path);
     }

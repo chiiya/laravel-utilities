@@ -22,8 +22,7 @@ class ExcelWriter
      */
     public function open(string $path): void
     {
-        $options = new Options;
-        $options->setTempFolder(storage_path('app/tmp'));
+        $options = new Options(tempFolder: storage_path('app/tmp'));
         $this->writer = new Writer($options);
         $this->writer->openToFile($path);
     }
@@ -47,6 +46,7 @@ class ExcelWriter
      *
      * @throws WriterNotOpenedException
      * @throws InvalidSheetNameException
+     * @throws IOException
      */
     public function addSheet(string $name): void
     {
@@ -62,12 +62,8 @@ class ExcelWriter
      */
     public function addHeaderRow(array|Row $data): void
     {
-        $style = (new Style)
-            ->setFontBold()
-            ->setFontColor(Color::WHITE)
-            ->setBackgroundColor(Color::DARK_BLUE);
-        $row = $data instanceof Row ? $data : Row::fromValues($data);
-        $row->setStyle($style);
+        $style = new Style(fontBold: true, fontColor: Color::WHITE, backgroundColor: Color::DARK_BLUE);
+        $row = $data instanceof Row ? $data : Row::fromValuesWithStyle($data, $style);
         $this->writer->addRow($row);
     }
 

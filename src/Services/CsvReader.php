@@ -20,8 +20,7 @@ class CsvReader
      */
     public function open(string $path, string $delimiter = ';'): void
     {
-        $options = new Options;
-        $options->FIELD_DELIMITER = $delimiter;
+        $options = new Options(FIELD_DELIMITER: $delimiter);
         $this->reader = new Reader($options);
         $this->reader->open($path);
     }
