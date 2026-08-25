@@ -78,7 +78,7 @@ abstract class AbstractRepository
     /**
      * Search entities.
      *
-     * @return Collection<int, TModel>|LengthAwarePaginator
+     * @return LengthAwarePaginator<int, TModel>
      */
     public function search(?string $search, array $parameters = []): LengthAwarePaginator
     {
@@ -91,7 +91,7 @@ abstract class AbstractRepository
                 if (is_array($field)) {
                     $builder->orWhereRaw('CONCAT('.implode(", ' ', ", $field).') LIKE ?', ['%'.$search.'%']);
                 } else {
-                    $builder->orWhere($field, 'LIKE', '%'.$search.'%');
+                    $builder->orWhereLike($field, '%'.$search.'%');
                 }
             }
         });

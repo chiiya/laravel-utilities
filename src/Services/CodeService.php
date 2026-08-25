@@ -2,6 +2,7 @@
 
 namespace Chiiya\Common\Services;
 
+use Carbon\Carbon;
 use Exception;
 use Illuminate\Filesystem\Filesystem;
 use OpenSpout\Common\Exception\IOException;
@@ -11,25 +12,13 @@ use Symfony\Component\Console\Helper\ProgressBar;
 
 class CodeService
 {
-    /**
-     * Numbers only.
-     *
-     * @var string
-     */
+    /** Numbers only. */
     final public const SET_NUMBERS = '1234567890';
 
-    /**
-     * Numbers and uppercase characters without similar looking ones (IJL1O0) and W (problematic character length).
-     *
-     * @var string
-     */
+    /** Numbers and uppercase characters without similar looking ones (IJL1O0) and W (problematic character length). */
     final public const SET_NUMBERS_AND_UPPERCASE = '23456789ABCDEFGHKMNPQRSTUVXYZ';
 
-    /**
-     * Alphanumeric characters without similar looking ones (IJL1O0) and W (problematic character length).
-     *
-     * @var string
-     */
+    /** Alphanumeric characters without similar looking ones (IJL1O0) and W (problematic character length). */
     final public const SET_ALPHANUMERIC = '23456789ABCDEFGHKMNPQRSTUVXYZabcdefghkmnpqrstuvxyz';
     protected array $existing = [];
     protected array $codes = [];
@@ -94,10 +83,10 @@ class CodeService
      * @throws IOException
      * @throws WriterNotOpenedException
      */
-    public function export(string $path, int $perFile = 1000000, ?ProgressBar $bar = null): array
+    public function export(string $path, int $perFile = 1_000_000, ?ProgressBar $bar = null): array
     {
         $path = mb_rtrim($path, DIRECTORY_SEPARATOR);
-        $date = date('Ymdhi');
+        $date = Carbon::now()->format('Ymdhi');
         $batch = 1;
         $count = 0;
         $file = "{$path}/codes-{$date}-{$batch}.csv";
@@ -120,7 +109,7 @@ class CodeService
 
         $this->writer->close();
 
-        return array_map(fn (int $batch) => "{$path}/codes-{$date}-{$batch}.csv", range(1, $batch));
+        return array_map(fn (int $batch): string => "{$path}/codes-{$date}-{$batch}.csv", range(1, $batch));
     }
 
     /**
@@ -156,7 +145,7 @@ class CodeService
     {
         return implode(
             '',
-            array_map(fn (string $char) => $char === '#' ? $characters[random_int(
+            array_map(fn (string $char): string => $char === '#' ? $characters[random_int(
                 0,
                 mb_strlen($characters) - 1,
             )] : $char, mb_str_split($pattern)),

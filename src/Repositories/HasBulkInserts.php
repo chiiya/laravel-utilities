@@ -26,10 +26,13 @@ trait HasBulkInserts
         $values = mb_rtrim($values, ', ');
 
         $query = 'INSERT INTO '.$this->instance->getTable().' ';
-        $columns = '('.implode(', ', array_map(fn ($column) => '`'.$column.'`', $this->bulkInsertColumns())).')';
+        $columns = '('.implode(
+            ', ',
+            array_map(fn ($column): string => '`'.$column.'`', $this->bulkInsertColumns()),
+        ).')';
         $fields = implode(
             ', ',
-            array_map(fn ($column) => $column.'=VALUES('.$column.')', $this->bulkInsertUpdatedColumns()),
+            array_map(fn ($column): string => $column.'=VALUES('.$column.')', $this->bulkInsertUpdatedColumns()),
         );
 
         $query .= $columns.' VALUES '.$values.' ON DUPLICATE KEY UPDATE '.$fields.';';

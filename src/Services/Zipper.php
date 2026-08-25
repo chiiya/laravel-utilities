@@ -38,9 +38,7 @@ class Zipper
             $this->open($path);
         }
 
-        if ($this->zipPath === null) {
-            throw new ZipperException('Missing path to zip archive.');
-        }
+        throw_if($this->zipPath === null, ZipperException::class, 'Missing path to zip archive.');
 
         $information = pathinfo($this->zipPath);
         $path = $this->getTemporaryFileLocation($information['filename']);
@@ -61,9 +59,7 @@ class Zipper
 
         $status = $this->zip->open($this->zipPath, ZipArchive::CREATE | ZipArchive::OVERWRITE);
 
-        if ($status !== true) {
-            throw new ZipperException('Could not create archive. ZIPARCHIVE-ERROR-CODE: '.$status);
-        }
+        throw_if($status !== true, ZipperException::class, 'Could not create archive. ZIPARCHIVE-ERROR-CODE: '.$status);
 
         return $this;
     }
@@ -79,19 +75,17 @@ class Zipper
      */
     public function addFile(string $filePath, ?string $localName = null): self
     {
-        if (! file_exists($filePath)) {
-            throw new ZipperException("File not found: {$filePath}");
-        }
+        throw_unless(file_exists($filePath), ZipperException::class, "File not found: {$filePath}");
 
-        if (! is_readable($filePath)) {
-            throw new ZipperException("File not readable: {$filePath}");
-        }
+        throw_unless(is_readable($filePath), ZipperException::class, "File not readable: {$filePath}");
 
         $localName ??= basename($filePath);
 
-        if (! $this->zip->addFile($filePath, $localName)) {
-            throw new ZipperException("Failed to add file: {$filePath}");
-        }
+        throw_unless(
+            $this->zip->addFile($filePath, $localName),
+            ZipperException::class,
+            "Failed to add file: {$filePath}",
+        );
 
         return $this;
     }
@@ -107,15 +101,11 @@ class Zipper
      */
     public function addDirectory(string $directory, ?string $baseInZip = null): self
     {
-        if (! is_dir($directory)) {
-            throw new ZipperException("Directory not found: {$directory}");
-        }
+        throw_unless(is_dir($directory), ZipperException::class, "Directory not found: {$directory}");
 
         $realPath = realpath($directory);
 
-        if ($realPath === false) {
-            throw new ZipperException("Could not resolve directory: {$directory}");
-        }
+        throw_if($realPath === false, ZipperException::class, "Could not resolve directory: {$directory}");
 
         $files = new RecursiveIteratorIterator(
             new RecursiveDirectoryIterator($realPath),
@@ -132,9 +122,11 @@ class Zipper
                     $relativePath = mb_rtrim($baseInZip, '/').'/'.mb_ltrim($relativePath, '/');
                 }
 
-                if (! $this->zip->addFile($filePath, $relativePath)) {
-                    throw new ZipperException("Failed to add file: {$filePath}");
-                }
+                throw_unless(
+                    $this->zip->addFile($filePath, $relativePath),
+                    ZipperException::class,
+                    "Failed to add file: {$filePath}",
+                );
             }
         }
 
@@ -169,13 +161,9 @@ class Zipper
      */
     public function close(): string
     {
-        if ($this->zipPath === null) {
-            throw new ZipperException('No zip archive has been created.');
-        }
+        throw_if($this->zipPath === null, ZipperException::class, 'No zip archive has been created.');
 
-        if (! $this->zip->close()) {
-            throw new ZipperException('Failed to close zip archive.');
-        }
+        throw_unless($this->zip->close(), ZipperException::class, 'Failed to close zip archive.');
 
         return $this->zipPath;
     }
@@ -214,9 +202,7 @@ class Zipper
         for ($i = 0; $i < $this->zip->numFiles; ++$i) {
             $name = $this->zip->getNameIndex($i);
 
-            if ($name === false) {
-                throw new ZipperException('Failed to list files.');
-            }
+            throw_if($name === false, ZipperException::class, 'Failed to list files.');
 
             $list[] = $name;
         }
@@ -241,9 +227,7 @@ class Zipper
     {
         $status = $flags !== null ? $this->zip->open($path, $flags) : $this->zip->open($path);
 
-        if ($status !== true) {
-            throw new ZipperException('Could not open archive. ZIPARCHIVE-ERROR-CODE: '.$status);
-        }
+        throw_if($status !== true, ZipperException::class, 'Could not open archive. ZIPARCHIVE-ERROR-CODE: '.$status);
 
         return $this;
     }

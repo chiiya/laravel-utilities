@@ -5,7 +5,7 @@ namespace Chiiya\Common\Entities;
 class DownloadedFile
 {
     public function __construct(
-        private string $path,
+        private readonly string $path,
     ) {}
 
     public function getPath(): string
